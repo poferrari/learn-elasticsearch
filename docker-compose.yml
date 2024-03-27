@@ -1,0 +1,43 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-elasticsearch
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"      
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data-standalone:/usr/share/elasticsearch/data                  
+    healthcheck:
+      test: ["CMD", "curl", "-s", "http://localhost:9200"]
+      interval: 10s
+      timeout: 5s
+    ports:
+      - 9201:9200
+    networks:
+      - elastic-standalone
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.13.3
+    container_name: logstash
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf      
+      - ./logstash/202401_PEP.csv:/202401_PEP.csv
+    depends_on:
+      - elasticsearch      
+    command: logstash -f /usr/share/logstash/pipeline/logstash.conf
+    networks:
+      - elastic-standalone  
+
+volumes:
+  data-standalone:
+    driver: local
+
+networks:
+  elastic-standalone:
+    driver: bridge
