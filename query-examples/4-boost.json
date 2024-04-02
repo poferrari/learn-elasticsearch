@@ -1,0 +1,27 @@
+{
+   "query": {
+     "bool": {
+       "should": [
+         {
+           "match": {
+             "CPF": {
+               "query": "***.740.193-**",
+               "boost": 5
+             }
+           }
+         },
+         {
+           "match": {
+             "Name": "LUIZA SANTI"
+           }
+         }
+       ]
+     }
+   },
+   "highlight": {
+     "fields": {
+       "CPF": {},
+       "Name": {}
+     }
+   }
+ }

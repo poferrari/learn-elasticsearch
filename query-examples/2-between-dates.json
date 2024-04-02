@@ -1,0 +1,14 @@
+{
+   "query": {
+     "bool": {
+       "filter": {
+         "range": {
+           "StartDateExercise": {
+             "gte": "2021-01-02",
+             "lte": "2021-01-02"
+           }
+         }
+       }
+     }
+   }
+ }

@@ -26,8 +26,9 @@ services:
     image: docker.elastic.co/logstash/logstash:7.13.3
     container_name: logstash
     volumes:
-      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf      
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
       - ./logstash/202401_PEP.csv:/202401_PEP.csv
+      - ./logstash/mapping.json:/mapping.json
     depends_on:
       - elasticsearch      
     command: logstash -f /usr/share/logstash/pipeline/logstash.conf

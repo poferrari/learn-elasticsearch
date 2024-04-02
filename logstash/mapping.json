@@ -1,0 +1,50 @@
+{
+    "index_patterns": [
+        "*"
+    ],
+    "settings": {
+        "number_of_shards": 1,
+        "analysis": {
+            "filter": {
+                "asciifolding": {
+                    "type": "asciifolding",
+                    "preserve_original": true
+                }
+            },
+            "analyzer": {
+                "custom_analyzer": {
+                    "tokenizer": "standard",
+                    "filter": [
+                        "lowercase",
+                        "asciifolding"
+                    ]
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "Name": {
+                "type": "text",
+                "analyzer": "custom_analyzer"
+            },          
+            "AgencyName": {
+                "type": "text",
+                "analyzer": "standard"
+            },
+            "FunctionDescription": {
+                "type": "text",
+                "analyzer": "standard"
+            },
+            "StartDateExercise": {
+                "type": "date"                
+            },
+            "EndDateExercise": {
+                "type": "date"            
+            },
+            "EndDateWaitingPeriod": {
+                "type": "date"                
+            }
+        }
+    }
+}
