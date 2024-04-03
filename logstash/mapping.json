@@ -32,9 +32,15 @@
                 "type": "text",
                 "analyzer": "standard"
             },
+            "CPF": {
+                "type": "keyword",
+                "ignore_above": 50
+            },  
             "FunctionDescription": {
-                "type": "text",
-                "analyzer": "standard"
+                "type": "keyword"                
+            },
+            "FunctionLevel": {
+                "type": "keyword"                
             },
             "StartDateExercise": {
                 "type": "date"                

@@ -1,27 +1,27 @@
 {
-   "query": {
-     "bool": {
-       "should": [
-         {
-           "match": {
-             "CPF": {
-               "query": "***.740.193-**",
-               "boost": 5
-             }
-           }
-         },
-         {
-           "match": {
-             "Name": "LUIZA SANTI"
-           }
-         }
-       ]
-     }
-   },
-   "highlight": {
-     "fields": {
-       "CPF": {},
-       "Name": {}
-     }
-   }
- }
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "CPF": {
+              "value": "***.536.138-**",
+              "boost": 5
+            }
+          }
+        },
+        {
+          "match": {
+            "Name": "LUIZA SANTI"
+          }
+        }
+      ]
+    }
+  },
+  "highlight": {
+    "fields": {
+      "CPF": {},
+      "Name": {}
+    }
+  }
+}

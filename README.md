@@ -39,3 +39,8 @@ curl -X POST "localhost:9201/your_index/_count" -H 'Content-Type: application/js
 You can find an example JSON query in the [`query-examples/1-count-documents-index.json`](query-examples/1-count-documents-index.json) file.
 
 > Other examples you can find in the folder [`query-examples`](query-examples).
+
+## References
+* https://www.elastic.co/blog/benchmarking-and-sizing-your-elasticsearch-cluster-for-logs-and-metrics
+* https://aws.amazon.com/solutions/case-studies/pinterest-case-study/
+* https://www.infoq.com/br/articles/elasticsearch-ideal-para-meu-projeto/

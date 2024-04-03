@@ -1,0 +1,10 @@
+{
+  "size": 0,
+  "aggs": {
+    "function_descriptions": {
+      "terms": {
+        "field": "FunctionDescription"
+      }
+    }
+  }
+}
