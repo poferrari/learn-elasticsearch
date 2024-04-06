@@ -1,22 +1,14 @@
 {
-    "index_patterns": [
-        "*"
-    ],
+    "index_patterns": ["br_pep-*"],
     "settings": {
         "number_of_shards": 1,
-        "analysis": {
-            "filter": {
-                "asciifolding": {
-                    "type": "asciifolding",
-                    "preserve_original": true
-                }
-            },
+        "analysis": {           
             "analyzer": {
-                "custom_analyzer": {
+                "insensitive_analyzer": {
                     "tokenizer": "standard",
                     "filter": [
                         "lowercase",
-                        "asciifolding"
+                        "asciifolding"                        
                     ]
                 }
             }
@@ -26,31 +18,21 @@
         "properties": {
             "Name": {
                 "type": "text",
-                "analyzer": "custom_analyzer"
-            },          
-            "AgencyName": {
-                "type": "text",
-                "analyzer": "standard"
+                "analyzer": "insensitive_analyzer",
+                "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 256
+                    }
+                  }
             },
             "CPF": {
                 "type": "keyword",
                 "ignore_above": 50
-            },  
-            "FunctionDescription": {
-                "type": "keyword"                
-            },
-            "FunctionLevel": {
-                "type": "keyword"                
             },
             "StartDateExercise": {
                 "type": "date"                
-            },
-            "EndDateExercise": {
-                "type": "date"            
-            },
-            "EndDateWaitingPeriod": {
-                "type": "date"                
-            }
+            }              
         }
     }
 }
