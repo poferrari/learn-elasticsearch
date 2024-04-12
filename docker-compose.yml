@@ -35,6 +35,17 @@ services:
     networks:
       - elastic-standalone  
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.3
+    container_name: kibana
+    ports: 
+     - 5601:5601
+    depends_on:
+      - elasticsearch 
+      - logstash
+    networks:
+      - elastic-standalone
+
 volumes:
   data-standalone:
     driver: local
