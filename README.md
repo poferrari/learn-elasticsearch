@@ -2,10 +2,26 @@
 Repository for Elasticsearch studies.
 
 ## Installation
+This repository contains a `docker-compose.yml` file to set up Elasticsearch, Logstash, and Kibana (Elastic Stack) using Docker Compose.
+
+## Prerequisites
+- Docker installed on your machine
+- Docker Compose installed on your machine
+
+## Usage
+Run the following command to start the services:
 
 ```bash
 docker-compose -f docker-compose.yml up -d
 ```
+
+This command will start Elasticsearch, Logstash, and Kibana services with the configurations defined in the `docker-compose.yml` file. The services will be accessible as follows:
+
+- Elasticsearch: `http://localhost:9200`
+- Kibana: `http://localhost:5601`
+
+## Stopping the services
+To stop the services and remove the containers, use the following command:
 
 ```bash
 docker-compose -f docker-compose.yml down -v
@@ -18,6 +34,9 @@ docker-compose -f docker-compose.yml down -v
 
 #### Logstash
 [Logstash](https://www.elastic.co/guide/en/logstash/current/index.html) is an open-source tool for collecting, transforming, and sending data to various destinations, such as Elasticsearch, facilitating the centralization and analysis of logs and events.
+
+#### Kibana
+[Kibana](https://www.elastic.co/guide/en/kibana/7.17/index.html) is an open-source data visualization and exploration tool designed for Elasticsearch. It provides a user-friendly interface to explore, visualize, and analyze data stored in Elasticsearch indices. Kibana tools enable users to interact with their data through various charts, graphs, and maps, facilitating data-driven decision-making and operational intelligence.
 
 #### Multi Elasticsearch Head 
 Multi Elasticsearch Head is a [Chrome extension](https://chromewebstore.google.com/detail/multi-elasticsearch-head/cpmmilfkofbeimbmgiclohpodggeheim) graphical interface that allows users to interact with Elasticsearch.
@@ -44,3 +63,5 @@ You can find an example JSON query in the [`query-examples/1-count-documents-ind
 * https://www.elastic.co/blog/benchmarking-and-sizing-your-elasticsearch-cluster-for-logs-and-metrics
 * https://aws.amazon.com/solutions/case-studies/pinterest-case-study/
 * https://www.infoq.com/br/articles/elasticsearch-ideal-para-meu-projeto/
+* https://github.com/dzharii/awesome-elasticsearch
+* https://github.com/codingexplained/complete-guide-to-elasticsearch
