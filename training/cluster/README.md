@@ -130,3 +130,8 @@ To stop the services and remove the containers, use the following command:
 ```bash
 docker-compose -f docker-compose-cluster.yml down -v
 ```
+
+## References
+* https://www.elastic.co/blog/every-shard-deserves-a-home
+* https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-replication.html
+* https://www.elastic.co/guide/en/elasticsearch/reference/7.17/modules-cross-cluster-search.html
