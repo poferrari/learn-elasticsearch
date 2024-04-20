@@ -10,7 +10,6 @@ This repository contains a `docker-compose.yml` file to set up Elasticsearch, Lo
 
 ## Usage
 Run the following command to start the services:
-
 ```bash
 docker-compose -f docker-compose.yml up -d
 ```
@@ -19,6 +18,13 @@ This command will start Elasticsearch, Logstash, and Kibana services with the co
 
 - Elasticsearch: `http://localhost:9200`
 - Kibana: `http://localhost:5601`
+
+## Run details
+First, we started our Elasticsearch service, then we initiated the Logstash service. 
+
+In Logstash service, a [configuration](logstash/logstash.conf) was made to input the [PEP dataset](logstash/202401_PEP.csv) into Elasticsearch.
+
+Finally, we started the Kibana service for interaction with Elasticsearch through Dev Tools.
 
 ## Stopping the services
 To stop the services and remove the containers, use the following command:
