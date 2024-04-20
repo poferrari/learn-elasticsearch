@@ -69,7 +69,7 @@ You can find an example JSON query in the [`query-examples/1-count-documents-ind
 > Other examples you can find in the folder [`query-examples`](query-examples).
 
 ## Trainings
-Specific trainings on certain Elasticsearch topics, you can find in the folder [`training`](training)
+Specific trainings on certain Elasticsearch topics, you can find in the folder [`training`](training).
 
 ## References
 * https://www.elastic.co/blog/benchmarking-and-sizing-your-elasticsearch-cluster-for-logs-and-metrics
