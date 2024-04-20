@@ -38,6 +38,9 @@ docker-compose -f docker-compose.yml down -v
 #### Kibana
 [Kibana](https://www.elastic.co/guide/en/kibana/7.17/index.html) is an open-source data visualization and exploration tool designed for Elasticsearch. It provides a user-friendly interface to explore, visualize, and analyze data stored in Elasticsearch indices. Kibana tools enable users to interact with their data through various charts, graphs, and maps, facilitating data-driven decision-making and operational intelligence.
 
+##### Dev Tools
+[Dev Tools](https://www.elastic.co/guide/en/kibana/7.17/devtools-kibana.html) provides a user-friendly interface for interacting with Elasticsearch directly through HTTP requests. Execute queries, manage indices, and debug configs right from the UI. A must-have for devs and admins.
+
 #### Multi Elasticsearch Head 
 Multi Elasticsearch Head is a [Chrome extension](https://chromewebstore.google.com/detail/multi-elasticsearch-head/cpmmilfkofbeimbmgiclohpodggeheim) graphical interface that allows users to interact with Elasticsearch.
 
@@ -58,6 +61,9 @@ curl -X POST "localhost:9201/your_index/_count" -H 'Content-Type: application/js
 You can find an example JSON query in the [`query-examples/1-count-documents-index.json`](query-examples/1-count-documents-index.json) file.
 
 > Other examples you can find in the folder [`query-examples`](query-examples).
+
+## Trainings
+Specific trainings on certain Elasticsearch topics, you can find in the folder [`training`](training)
 
 ## References
 * https://www.elastic.co/blog/benchmarking-and-sizing-your-elasticsearch-cluster-for-logs-and-metrics
