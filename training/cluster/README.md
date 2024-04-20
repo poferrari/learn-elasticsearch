@@ -123,3 +123,10 @@ Starting the node `es03` again and checking the cluster's state, we see a new or
 docker-compose -f docker-compose-cluster.yml start es03
 docker-compose -f docker-compose-cluster.yml ps -a
 ```
+
+## Stopping the services
+To stop the services and remove the containers, use the following command:
+
+```bash
+docker-compose -f docker-compose-cluster.yml down -v
+```
