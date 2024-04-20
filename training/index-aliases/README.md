@@ -1,0 +1,1 @@
+# Index Aliases and Zero Downtime
