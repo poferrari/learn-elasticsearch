@@ -23,6 +23,8 @@ Access the Kibana Dev Tools tool and check the cluster's health using this comma
 ```bash
 GET /_cluster/health
 ```
+
+> [!TIP]
 > We will see that our cluster status is **green**.
 
 > [!NOTE]
