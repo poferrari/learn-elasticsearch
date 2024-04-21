@@ -104,6 +104,11 @@ We can get details of the unassigned state by running the command, look for `fav
 GET /_cluster/allocation/explain
 ```
 
+We can view index `favorite_candy` statistics by running the command:
+```bash
+GET /favorite_candy/_stats
+```
+
 When stopping another node in the cluster and trying to run our query, we notice a delay in the response and even timeouts in the request.
 ```bash
 docker-compose -f docker-compose-cluster.yml stop es02
