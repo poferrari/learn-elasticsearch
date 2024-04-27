@@ -77,3 +77,4 @@ Specific trainings on certain Elasticsearch topics, you can find in the folder [
 * https://www.infoq.com/br/articles/elasticsearch-ideal-para-meu-projeto/
 * https://github.com/dzharii/awesome-elasticsearch
 * https://github.com/codingexplained/complete-guide-to-elasticsearch
+* [Mini Beginner's Crash Course to Elasticsearch and Kibana](https://www.youtube.com/playlist?list=PL_mJOmq4zsHbcdoeAwNWuhEWwDARMMBta)
