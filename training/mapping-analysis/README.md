@@ -294,9 +294,9 @@ The index attribute controls how the string will be indexed. It can contain one 
 * **no**: Don’t index this field at all. This field will not be searchable.
 
 These four fields would all be considered to be empty, and would not be indexed:
-* "null_value": null,
-* "empty_array": [],
-* "array_with_null_value": [ null ]
+* `"null_value": null`
+* `"empty_array": []`
+* `"array_with_null_value": [ null ]`
 
 ## Refences
 * https://www.elastic.co/guide/en/elasticsearch/reference/7.17/analysis-overview.html
