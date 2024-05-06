@@ -31,7 +31,7 @@ GET /_analyze
 }
 ```
 
-There are also specific analyzers for each language (**english**, **portuguese**, **spanish** and others). For example:
+There are also specific analyzers for each language (**english**, **portuguese**, **brazilian**, **spanish** and others). For example:
 ```bash
 GET /_analyze
 {
@@ -42,6 +42,12 @@ GET /_analyze
 GET /_analyze
 {
   "analyzer": "portuguese",
+  "text": "Defina a forma como semitransparente chamando set_trans(5)."
+}
+
+GET /_analyze
+{
+  "analyzer": "brazilian",
   "text": "Defina a forma como semitransparente chamando set_trans(5)."
 }
 
@@ -110,6 +116,14 @@ PUT /my_index
     }
   }
 }
+```
+
+```bash
+GET /my_index/_settings
+```
+
+```bash
+GET /my_index/_mapping
 ```
 
 > [!TIP]
@@ -277,6 +291,29 @@ PUT /my_index
           }
         }
       }
+    }
+  }
+}
+```
+
+```bash
+POST /my_index/_doc/_bulk
+{ "index": { "_id": 1 }}
+{ "title": "The quick brown fox" }
+{ "index": { "_id": 2 }}
+{ "title": "The quick brown fox jumps over the lazy dog" }
+{ "index": { "_id": 3 }}
+{ "title": "The quick brown fox jumps over the quick dog" }
+{ "index": { "_id": 4 }}
+{ "title": "Brown fox brown dog" }
+```
+
+```bash
+POST /my_index/_search
+{
+  "query": {
+    "match": {
+      "title": "quick brown"
     }
   }
 }

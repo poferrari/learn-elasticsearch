@@ -2,14 +2,21 @@
     "index_patterns": ["br_pep-*"],
     "settings": {
         "number_of_shards": 1,
-        "analysis": {           
+        "analysis": {
+            "filter": {
+                "my_stopwords": {
+                    "type": "stop",
+                    "stopwords": [ "de", "do", "da", "dos", "das", "e" ]
+                }
+            },
             "analyzer": {
-                "insensitive_analyzer": {
+                "my_standard": {
                     "tokenizer": "standard",
-                    "filter": [
-                        "lowercase",
-                        "asciifolding"                        
-                    ]
+                    "filter": [ "lowercase", "asciifolding", "my_stopwords" ]
+                },
+                "pt_stp": {
+                    "type": "portuguese",
+                    "stopwords": "_portuguese_"
                 }
             }
         }
@@ -18,11 +25,15 @@
         "properties": {
             "Name": {
                 "type": "text",
-                "analyzer": "insensitive_analyzer",
+                "analyzer": "my_standard",
                 "fields": {
                     "keyword": {
                       "type": "keyword",
                       "ignore_above": 256
+                    },
+                    "pt_std": {
+                      "type": "text",
+                      "analyzer": "pt_stp"
                     }
                   }
             },
