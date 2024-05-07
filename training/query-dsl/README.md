@@ -77,6 +77,17 @@ GET /customers/_settings
 GET /customers/_mapping
 ```
 
+### Testing Analyzers
+(`name`, `name.keyword`, `name.std`, `name.br` and `name.pt_std`)
+```bash
+GET /customers/_analyze
+{
+  "field": "name",
+  "text" : "José Victor Ferreira da Silva Silvestre"
+}
+```
+
+### Index Some Data with Bulk
 Let's register some documents in the `customers` index. At this point, we'll use fictitious data solely for the purpose of learning about Elasticsearch.
 ```bash
 POST /customers/_doc/_bulk
@@ -131,6 +142,9 @@ POST /customers/_doc/_bulk
 { "index": { "_id": 25 }}
 { "name": "Camila Oliveira", "date_of_birth": "1998-12-05", "profile_aliases": ["Camilinha", "Mila", "Cami", "Lia"],"tax_id": 987654321, "salary": 5400.00}
 ```
+
+> [!NOTE]
+> Bulk API allows us to make multiple create, index, update, or delete requests in a single step.
 
 ## Most Important Queries and Filters
 ```bash
@@ -199,6 +213,20 @@ GET /customers/_search
 }
 ```
 
+### Ordering Results
+```bash
+GET /customers/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    { "date_of_birth": { "order": "desc" }},
+    "_score"
+  ]
+}
+```
+
 ### Matching and Analyzer
 (`name`, `name.keyword`, `name.std`, `name.br` and `name.pt_std`)
 ```bash
@@ -225,7 +253,7 @@ GET /customers/_search
 }
 ```
 
-## Validating Queries
+### Validating Queries
 ```bash
 GET /customers/_validate/query
 {
@@ -237,7 +265,7 @@ GET /customers/_validate/query
 }
 ```
 
-### Understanding Errors
+#### Understanding Errors
 ```bash
 GET /customers/_validate/query?explain
 {
@@ -249,6 +277,7 @@ GET /customers/_validate/query?explain
 }
 ```
 
+### Match Phrase Query
 ```bash
 GET /customers/_search
 {
@@ -260,6 +289,19 @@ GET /customers/_search
 }
 ```
 
+### Prefix Query
+```bash
+GET /customers/_search
+{
+  "query": {
+    "prefix": {
+      "name.pt_std": "lari"
+    }
+  }
+}
+```
+
+### Match Query and return fields
 ```bash
 GET /customers/_search
 {
@@ -275,7 +317,235 @@ GET /customers/_search
 }
 ```
 
-### Highlighting
+### Pagination
+```bash
+GET /customers/_search
+{
+  "from": 2,
+  "size": 1,
+  "query": {
+    "match": {
+      "name": {
+        "query": "macedo"        
+      }
+    }
+  }
+}
+```
+
+> [!WARNING]
+> index.max_result_window (from+size > 10.000)
+
+```bash
+GET /customers/_search
+{
+  "size": 2,
+  "query": {
+    "match": {
+      "name": {
+        "query": "macedo"        
+      }
+    }
+  },
+  "sort": [
+    {
+      "date_of_birth": { "order": "desc" }
+    },
+    {
+      "_id": { "order": "desc" }
+    }
+  ],
+  "search_after": [
+    675561600000,
+          "7"
+  ]
+}
+```
+
+### Aggregations
+```bash
+GET /customers/_search
+{   
+  "query": {
+    "match": {
+      "name": {
+        "query": "larrissa macedo magalhes",
+        "operator": "or"         
+      }
+    }
+  },
+ "aggs": {
+   "salaries": {
+      "terms": {
+        "field": "salary"
+      } 
+   },
+   "ages": {
+     "terms": {
+        "field": "date_of_birth"
+      } 
+   } 
+ }
+}
+```
+
+### Fuzziness (Fuzzy matching)
+
+The fuzziness parameter can be set to AUTO, which results in the following maximum edit distances:
+* 0 for strings of one or two characters;
+* 1 for strings of three, four, or five characters;
+* 2 for strings of more than five characters.
+
+```bash
+GET /customers/_search
+{
+  "query": {
+    "fuzzy": {
+      "name": {
+        "value": "laryssa",
+        "fuzziness": 1
+      }
+    }
+  }
+}
+```
+
+#### Fuzzy match Query
+```bash
+GET /customers/_search
+{
+  "query": {
+    "multi_match": {
+      "fields": [ "name", "profile_aliases" ],
+        "query": "larisa macedo machado",
+        "fuzziness": "AUTO"
+      }
+    }
+  }
+}
+```
+
+## Proximity Matching
+```bash
+POST /my_index/my_type/_bulk
+{ "index": { "_id": 1 }}
+{ "title": "The quick brown fox jumps over the quick dog" }
+{ "index": { "_id": 2 }}
+{ "title": "The quick brown fox jumps over the lazy dog" }
+{ "index": { "_id": 3 }}
+{ "title": "The quick brown fox" }
+{ "index": { "_id": 4 }}
+{ "title": "Brown fox brown dog" }
+```
+
+```bash
+POST /my_index_closer/_search
+{
+  "query": {
+    "match_phrase": {
+      "title": {
+        "query": "quick dog",
+        "slop": 50
+      }
+    }
+  }
+}
+```
+
+> [!TIP]
+> The `slop` parameter in Elasticsearch's match_phrase query specifies the maximum number of positions that the words in the query can be moved to match a document. A higher slop allows more flexibility in word order, while a slop of 0 requires exact word order.
+
+### Producing Shingles
+```bash
+PUT /my_index_bigram
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "bigram_filter": {
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 2,
+          "output_unigrams":"false"
+        }
+      },
+      "analyzer": {
+        "bigrams": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "porter_stem", 
+            "bigram_filter"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "fields": {
+          "shingles": {
+            "type": "text",
+            "analyzer": "bigrams"
+            }
+          }
+      }
+    }
+  }
+}
+```
+
+```bash
+GET /my_index_bigram/_analyze
+{
+  "field": "title.shingles",
+  "text" : "Sue ate the alligator"
+}
+```
+
+```bash
+POST /my_index_bigram/_doc/_bulk
+{ "index": { "_id": 1 }}
+{ "title": "Sue ate the alligator" }
+{ "index": { "_id": 2 }}
+{ "title": "The alligator ate Sue" }
+{ "index": { "_id": 3 }}
+{ "title": "Sue never goes anywhere without her alligator skin purse" }
+```
+
+```bash
+GET /my_index_bigram/_search
+{
+  "query": {
+    "match": {
+     "title": "the hungry alligator ate sue"
+    }
+  }
+}
+
+GET /my_index_bigram/_search
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "title": "the hungry alligator ate sue"
+        }
+      },
+      "should": {
+        "match": {
+          "title.shingles": "the hungry alligator ate sue"
+        }
+      }
+    }
+  }
+}
+```
+
+## Highlighting
 ```bash
 GET /customers/_search
 {
@@ -289,7 +559,7 @@ GET /customers/_search
   },
   "highlight": {
     "number_of_fragments": 9,
-    "fragment_size": 100,
+    "fragment_size": 15,
     "require_field_match": "true",
     "pre_tags": [
       "<em>"
@@ -305,6 +575,15 @@ GET /customers/_search
   }
 }
 ```
+
+> [!NOTE]
+> Types of queries for searching across multiple fields of an index in Elasticsearch:
+> * **best_fields**: to find documents that match any field but scores them as if only the best field matched. It's useful when one field is more important than the others, and the score should reflect this importance. 
+>   * **Example**: if you're searching for a product, where the name of the product is more important than its description;
+> * **most_fields**: to find documents that match most of the query terms across all analyzed fields. It's suitable when the query terms should match across multiple fields, and documents that match most of these terms are considered more relevant. 
+>   * **Example**: in a search scenario where you want to find documents related to a topic across various fields like title, description, and tags;
+> * **cross_fields**: to find documents where all terms must appear in any field to match. It's useful when you want to search across multiple fields as a single field. 
+>   * **Example**: when searching for a person's name in a database where the name could be in any field like first name, last name, or nickname;
 
 ```bash
 GET /customers/_search
@@ -324,18 +603,17 @@ GET /customers/_search
   }
 }
 ```
+
 > [!NOTE]
-> Query type:
-> * **best_fields**: to find documents that match any field but scores them as if only the best field matched. It's useful when one field is more important than the others, and the score should reflect this importance;
-> * **most_fields**: to find documents that match most of the query terms across all analyzed fields. It's suitable when the query terms should match across multiple fields, and documents that match most of these terms are considered more relevant;
-> * **cross_fields**: to find documents where all terms must appear in any field to match. It's useful when you want to search across multiple fields as a single field.
+> **Boost**: `name^10`, it means it will have ten times more weight in the scoring (score) than the `profile_aliases` field.
 
 ## Combining Multiple Clauses
 
 ### Bool Filter
-* **must**: all of these clauses must match. The equivalent of AND.
-* **must_not**: all of these clauses must not match. The equivalent of NOT.
-* **should**: at least one of these clauses must match. The equivalent of OR.
+* **must**: all of these clauses must match. The equivalent of `AND`.
+* **must_not**: all of these clauses must not match. The equivalent of `NOT`.
+* **should**: at least one of these clauses must match. The equivalent of `OR`.
+
 ```bash
 GET /customers/_search
 {
@@ -420,7 +698,10 @@ GET /customers/_search
             "must": [
               {
                 "match": {
-                  "name.std": "macedo"
+                  "name.std": {
+                    "query": "macedo",
+                    "boost": 5
+                  }
                 }
               }
             ],
@@ -461,14 +742,162 @@ GET /customers/_search
 }
 ```
 
+## Synonyms 
 ```bash
-
+PUT /my_products_synonyms
+{
+  "settings": {
+    "index": {
+      "analysis": {
+        "analyzer": {
+          "synonyms_analyzer": {
+            "tokenizer": "standard",
+            "filter": [ "lowercase", "synonyms_filter" ]
+          }
+        },
+        "filter": {
+          "synonyms_filter": {
+            "type": "synonym_graph",
+            "lenient": true,
+            "synonyms": [
+              "pc => personal computer", 
+              "computer, pc, laptop",
+              "sea biscuit, sea biscit => seabiscuit"              
+            ]
+          }
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "product_name": {
+        "type": "text",
+        "analyzer": "synonyms_analyzer",
+        "search_analyzer": "synonyms_analyzer"
+      }
+    }
+  }
+}
 ```
 
 ```bash
-
+POST my_products_synonyms/_analyze
+{
+  "field": "product_name",
+  "text": ["pc", "biscuit"]
+}
 ```
 
 ```bash
-
+POST /_bulk
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 1 } }
+{ "product_name": "Laptop X1 i7 8gb RAM" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 2 } }
+{ "product_name": "PC Gaming XYZ" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 3 } }
+{ "product_name": "Laptop Z1 i7 6gb RAM" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 4 } }
+{ "product_name": "Desktop Computer" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 5 } }
+{ "product_name": "Laptop X2 i5 4gb RAM" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 6 } }
+{ "product_name": "Laptop Z1 i7 6gb RAM" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 7 } }
+{ "product_name": "Sea Biscit Deluxe Edition" }
+{ "index" : { "_index": "my_products_synonyms",  "_id" : 8 } }
+{ "product_name": "Seabiscuit Racing Series" }
 ```
+
+```bash
+POST my_products_synonyms/_search
+{
+  "query": { 
+    "match": { 
+      "product_name": {
+        "query": "notebook i7 8gb",
+        "minimum_should_match": "60%"
+      }
+    }
+  },
+  "highlight": {
+    "fields": {
+      "product_name": {
+        "type": "plain",
+        "pre_tags": ["<b>"],
+        "post_tags": ["</b>"]
+      }
+    }
+  }
+}
+```
+
+## Script
+```bash
+POST /store/products/_bulk
+{ "index" : { "_id" : 1 } }
+{ "name": "Produto 1", "unit_price": 10.00, "quantity": 5}
+{ "index" : { "_id" : 2 } }
+{ "name": "Produto 2", "unit_price": 15.00, "quantity": 3}
+{ "index" : { "_id" : 3 } }
+{ "name": "Produto 3", "unit_price": 20.00, "quantity": 2}
+{ "index" : { "_id" : 4 } }
+{ "name": "Produto 4", "unit_price": 20.00, "quantity": 10}
+{ "index" : { "_id" : 5 } }
+{ "name": "Produto 5", "unit_price": 50.00, "quantity": 2}
+```
+
+```bash
+POST /store/_search
+{
+ "query": {
+    "script_score": {
+      "query": { 
+        "match_all": {}
+      },
+      "script": {
+        "source": "doc['unit_price'].value * doc['quantity'].value"
+      }
+    }
+  }
+}
+```
+
+```bash
+PUT _scripts/total_value
+{
+  "script": {
+    "source": "doc['unit_price'].value * doc['quantity'].value",
+    "lang": "painless"
+  }
+}
+```
+
+```bash
+GET /store/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "script_fields": {
+    "total_value": {
+      "script": {
+        "id": "total_value"
+      }
+    }
+  },
+  "sort": [
+    {
+      "_script": {
+        "script": {
+          "id": "total_value"
+        },
+        "type": "number",
+        "order": "desc"
+      }
+    }
+  ],
+  "fields": ["name", "unit_price", "quantity", "total_value"]
+}
+```
+
