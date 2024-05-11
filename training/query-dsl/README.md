@@ -427,7 +427,7 @@ GET /customers/_search
 
 ## Proximity Matching
 ```bash
-POST /my_index/my_type/_bulk
+POST /my_index_closer/my_type/_bulk
 { "index": { "_id": 1 }}
 { "title": "The quick brown fox jumps over the quick dog" }
 { "index": { "_id": 2 }}
