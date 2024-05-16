@@ -92,5 +92,10 @@ POST /customers/_search/template
 }
 ```
 
+List existing search templates in Elasticsearch.
+```bash
+GET _cluster/state/?filter_path=metadata.stored_scripts
+```
+
 ## References
 - [Search templates](https://www.elastic.co/guide/en/elasticsearch/reference/master/search-template.html)
