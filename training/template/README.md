@@ -15,6 +15,7 @@ A query template consists of these two main elements:
 * A template represents a query object that Elasticsearch supports. The template utilizes the [mustache syntax](http://mustache.github.io/), which is widely used to articulate templates;
 * Optionally, a parameter dictionary is employed to populate the template.
 
+To store the template in the `.scripts` index:
 ```bash
 POST _scripts/my-search-template
 {
@@ -31,6 +32,17 @@ POST _scripts/my-search-template
 }
 ```
 
+To render the template using the `_render/template` REST:
+```bash
+POST /_render/template
+{ 
+  "id": "my-search-template", 
+  "params": { 
+    "value": "duarte" 
+  } 
+}
+```
+To call the template with the following code:
 ```bash
 POST /customers/_search/template
 { 
